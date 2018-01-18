@@ -1,0 +1,107 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>js导出excel示例</title>
+    <meta charset="Utf-8" />
+    <script src="js/jquery-1.7.min.js"></script>
+    <script src="js/base.excel.js"></script>
+    <style>
+        input[type="button"]{
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>一.说明</h2>
+    <p>1.由于项目需要浏览器js导出excel，网上找了一圈，csdn悲了伤的老王和博客园宇青木的js导出excel示例比较符合要求，在此先谢谢两位。<br/>
+        在两位的示例基础上，我进行了整理、测试和扩展，做记录的同时希望能帮助其他人。</p>
+    <h3>本示例使用两种方案导出：</h3>
+    <ul>
+        <li>IE命令方式：获取table的html或csv的字符串,使用execCommand的Saveas保存</li>
+        <li>data协议：非IE浏览器，获取table的html或csv的字符串,声明导出协议并编码,通过创建a标签模拟点击下载导出。
+           <ul>
+               <li>var uri= 'data:text/xls;charset=utf-8,\ufeff' + encodeURIComponent(excelFileStr)；</li>
+               <li> var downloadLink = document.createElement("a");</li>
+               <li> downloadLink.href = uri;</li>
+               <li> downloadLink.download = fileName;</li>
+               <li>document.body.appendChild(downloadLink);</li>
+               <li> downloadLink.click();</li>
+               <li>document.body.removeChild(downloadLink);  </li>
+           </ul>
+        </li>
+    </ul>
+    <p>2.后缀为xls的文件保持原表格样式（支持跨行、跨列），后缀为.csv的文件不支持支持跨行、跨列，但支持更多程序打开，
+            请根据实际情况选择导出文件类型(.xls或csv)</p>
+    <p>3.浏览器支持：IE8+,chrone,firefox</p>
+    <h2>二.导出示例</h2>
+    <h3>1.导出table到excel</h3>
+    <table id="tb" border="1"  style="width:300px;">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>编号</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>张三</td>
+                <td>1122</td>
+            </tr>
+            <tr>
+                <td>李四</td>
+                <td>2211</td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="margin-top:5px;">
+        <input value="导出为xls" id="btnExportTableToXLS" type="button"  />
+        <input value="导出为.csv" id="btnExportTableToCSV" type="button" />
+        <p>调用:exportExcel.exportFromTable(tableId,fileName,inWindow);</p>
+        <h4>参数说明:</h4>
+        <ul>
+            <li>tableId:要下载的表格Id</li>
+            <li>fileName:下载的excel文件名,如果为空,则为当前时间+后缀名(.csv)</li>
+            <li>inWindow:窗体,可为空</li>
+        </ul>
+    </div>
+    <h3>2.导出json对象数组到excel</h3>
+    <div>
+        <p>json对象数组示例: [{ '姓名': '张三', '编号': 1 }, { '姓名': '李四', '编号': 2 }]</p>
+        <input value="导出xls" id="btnExportJsonToXLS" type="button" />
+        <input value="导出csv" id="btnExportJsonToCSV" type="button" />
+        <p>调用:exportExcel.expoprtFromJson(array,fileName,inWindow);</p>
+        <h4>参数说明:</h4>
+        <ul>
+            <li>array:json对象数组</li>
+            <li>fileName:下载的excel文件名,如果为空,则为当前时间+后缀名(.csv)</li>
+            <li>inWindow:窗体,可为空</li>
+        </ul>
+    </div>
+
+    <h2>参考文章：</h1>
+    <ul>
+        <li>csdn悲了伤的老王的<a href="http://blog.csdn.net/aa122273328/article/details/50388673">HTML用JS导出Excel的五种方法</a></li>
+        <li>博客园宇青木的<a href="https://www.cnblogs.com/dangyuqiang/p/7428499.html">js导出excel</a></li>
+    </ul>
+    <script>
+        document.ready=function(){
+            var testJson=[{ '姓名': '张三', '编号': 1 }, { '姓名': '李四', '编号': 2 }];
+            document.getElementById('btnExportTableToXLS').onclick=function(){
+                exportExcel.exportFromTable('tb', '表格导出xls测试.xls', '')
+            };
+
+            document.getElementById('btnExportTableToCSV').onclick=function(){
+                exportExcel.exportFromTable('tb', '表格导出xls测试.csv', '')
+            };
+
+            document.getElementById('btnExportJsonToXLS').onclick=function(){
+                exportExcel.expoprtFromJson(testJson, 'json数组导出xls测试.xls', '')
+            };
+
+            document.getElementById('btnExportJsonToCSV').onclick=function(){
+                exportExcel.expoprtFromJson(testJson, 'json数组导出xls测试.csv', '')
+            };
+        }
+    </script>
+</body>
+</html>
